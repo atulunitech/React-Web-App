@@ -1,16 +1,14 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box, Avatar } from '@mui/material';
 import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon } from '@mui/icons-material';
-import Cookies from 'js-cookie';
+import { useAuth } from '../../context/AuthContext';
 
 const Header = ({ onMenuClick }) => {
-  const authResponse = JSON.parse(localStorage.getItem('authResponse') || '{}');
-  console.log('authResponse', authResponse.fullName);
-  const userName = authResponse.fullName || authResponse.name || 'User';
+  const { user, logout } = useAuth();
+  const userName = user?.fullName || user?.name || 'User';
   
   const handleLogout = () => {
-    Cookies.remove('access_token');
-    localStorage.removeItem('authResponse');
+    logout();
     window.location.href = '/';
   };
   return (

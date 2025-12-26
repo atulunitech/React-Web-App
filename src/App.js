@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import BackendLayout from './backend/components/BackendLayout';
 import Home from './components/pages/Home';
@@ -11,40 +13,48 @@ import './App.scss';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={
-          <Layout>
-            <Home />
-          </Layout>
-        } />
-        <Route path="/users" element={
-          <Layout>
-            <RegisteredUser />
-          </Layout>
-        } />
-        <Route path="/admin" element={
-          <BackendLayout>
-            <Dashboard />
-          </BackendLayout>
-        } />
-        <Route path="/admin/dashboard" element={
-          <BackendLayout>
-            <Dashboard />
-          </BackendLayout>
-        } />
-        <Route path="/admin/products" element={
-          <BackendLayout>
-            <ProductList />
-          </BackendLayout>
-        } />
-        <Route path="*" element={
-          <Layout>
-            <NotFound />
-          </Layout>
-        } />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={
+            <Layout>
+              <Home />
+            </Layout>
+          } />
+          <Route path="/users" element={
+            <Layout>
+              <RegisteredUser />
+            </Layout>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <BackendLayout>
+                <Dashboard />
+              </BackendLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute>
+              <BackendLayout>
+                <Dashboard />
+              </BackendLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/products" element={
+            <ProtectedRoute>
+              <BackendLayout>
+                <ProductList />
+              </BackendLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={
+            <Layout>
+              <NotFound />
+            </Layout>
+          } />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
