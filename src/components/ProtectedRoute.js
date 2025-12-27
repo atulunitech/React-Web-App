@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAppSelector } from '../store/hooks';
 import { Box, CircularProgress } from '@mui/material';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
 
   if (loading) {
     return (

@@ -1,14 +1,16 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box, Avatar } from '@mui/material';
 import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon } from '@mui/icons-material';
-import { useAuth } from '../../context/AuthContext';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { logout } from '../../store/authSlice';
 
 const Header = ({ onMenuClick }) => {
-  const { user, logout } = useAuth();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
   const userName = user?.fullName || user?.name || 'User';
   
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     window.location.href = '/';
   };
   return (

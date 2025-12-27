@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { Provider } from 'react-redux';
+import { store } from './store';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import BackendLayout from './backend/components/BackendLayout';
@@ -13,7 +14,7 @@ import './App.scss';
 
 function App() {
   return (
-    <AuthProvider>
+    <Provider store={store}>
       <Router>
         <Routes>
           <Route path="/" element={
@@ -54,7 +55,7 @@ function App() {
           } />
         </Routes>
       </Router>
-    </AuthProvider>
+    </Provider>
   );
 }
 
