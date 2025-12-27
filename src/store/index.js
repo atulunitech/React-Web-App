@@ -10,3 +10,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware),
 });
+
+// Log store changes in development
+if (process.env.NODE_ENV === 'development') {
+  store.subscribe(() => {
+    console.log('Store Updated:', store.getState());
+  });
+}

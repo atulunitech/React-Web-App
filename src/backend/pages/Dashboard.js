@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Grid, Card, CardContent, Box } from '@mui/material';
+import { useAppSelector } from '../../store/hooks';
 
 const Dashboard = () => {
+  const authState = useAppSelector((state) => state.auth);
+  
+  useEffect(() => {
+    console.log('Redux Store - Auth State:', authState);
+    console.log('User Data:', authState.user);
+    console.log('Is Authenticated:', authState.isAuthenticated);
+  }, [authState]);
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
