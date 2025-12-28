@@ -1,32 +1,67 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
+import { API_BASE_URL } from '../config/api';
 
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  loading: false,
-};
+// Async thunk for API call
+export const validateSSOToken = createAsyncThunk(
+  'auth/validateSSOToken',
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/validateSSOToken`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get('access_token')}`,
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Token validation failed');
+      }
+
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: {
+    user: null,
+    loading: false,
+    error: null,
+  },
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-      state.isAuthenticated = true;
-      localStorage.setItem('authResponse', JSON.stringify(action.payload));
-    },
     logout: (state) => {
       state.user = null;
-      state.isAuthenticated = false;
-      Cookies.remove('access_token');
-      localStorage.removeItem('authResponse');
+      state.error = null;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(validateSSOToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(validateSSOToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(validateSSOToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { setUser, logout, setLoading } = authSlice.actions;
+export const { logout, setLoading, setUser } = authSlice.actions;
 export default authSlice.reducer;
