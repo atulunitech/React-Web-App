@@ -32,15 +32,16 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const checkAuthAndRedirect = async () => {
-      const accessToken = Cookies.get('access_token');
+    // const checkAuthAndRedirect = async () => {
+    //   const accessToken = Cookies.get('access_token');
       
-      if (accessToken) {
-        await handleLogin();
-      }
-    };
+    //   if (accessToken) {
+    //     await handleLogin();
+    //   }
+    // };
     
-    checkAuthAndRedirect();
+    // checkAuthAndRedirect();
+    handleLogin();
   }, []);
 
   useEffect(() => {
