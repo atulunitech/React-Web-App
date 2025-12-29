@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../config/api';
 
@@ -7,22 +8,19 @@ export const validateSSOToken = createAsyncThunk(
   'auth/validateSSOToken',
   async (token, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/validateSSOToken`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Cookies.get('access_token')}`,
-        },
-        body: JSON.stringify({ token }),
-      });
+      const response = await axios.post(`${API_BASE_URL}/auth/validateSSOToken`, 
+        { token },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Cookies.get('access_token')}`,
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error('Token validation failed');
-      }
-
-      return await response.json();
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );

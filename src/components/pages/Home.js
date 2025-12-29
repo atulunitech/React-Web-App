@@ -3,32 +3,21 @@ import { Typography, Container, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useValidateSSOTokenMutation } from '../../services/authApi';
-import { setUser, setLoading } from '../../store/authSlice';
+import { validateSSOToken } from '../../store/authSlice';
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const [validateToken] = useValidateSSOTokenMutation();
+  const { user, loading } = useAppSelector((state) => state.auth);
 
   const handleLogin = async () => {
-    dispatch(setLoading(true));
-    
     let accessToken = Cookies.get('access_token');
     if (!accessToken) {
-      accessToken = '5723746c-9a78-4dc1-acdd-24437920d794';
+      accessToken = '80d61ee3-ac9f-4e72-9cf8-7a00cf6cc62d';
       Cookies.set('access_token', accessToken, { expires: 7 });
     }
 
-    try {
-      const result = await validateToken(accessToken).unwrap();
-      dispatch(setUser(result));
-    } catch (error) {
-      console.error('Login failed:', error);
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(validateSSOToken(accessToken));
   };
 
   useEffect(() => {
@@ -41,14 +30,14 @@ const Home = () => {
     // };
     
     // checkAuthAndRedirect();
-    handleLogin();
+    // handleLogin();
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       navigate('/admin');
     }
-  }, [isAuthenticated, navigate]);
+  }, [user, navigate]);
 
   return (
     <Container maxWidth="md">
