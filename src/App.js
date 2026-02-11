@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store';
+import Cookies from 'js-cookie';
+import { useAppDispatch } from './store/hooks';
+import { validateSSOToken, setUser } from './store/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import BackendLayout from './backend/components/BackendLayout';
@@ -13,8 +14,28 @@ import ProductList from './backend/pages/ProductList';
 import './App.scss';
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const accessToken = Cookies.get('access_token');
+    const authResponse = localStorage.getItem('authResponse');
+
+    // If we have a cached user in localStorage, set it immediately to avoid UI flicker
+    if (authResponse) {
+      try {
+        dispatch(setUser(JSON.parse(authResponse)));
+      } catch (e) {
+        // ignore parse errors
+      }
+    }
+
+    // If there's an access token, validate it with the server to restore session
+    if (accessToken) {
+      dispatch(validateSSOToken(accessToken));
+    }
+  }, [dispatch]);
+
   return (
-    <Provider store={store}>
       <Router>
         <Routes>
           <Route path="/" element={
@@ -55,7 +76,6 @@ function App() {
           } />
         </Routes>
       </Router>
-    </Provider>
   );
 }
 

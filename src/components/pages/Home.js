@@ -13,7 +13,7 @@ const Home = () => {
   const handleLogin = async () => {
     let accessToken = Cookies.get('access_token');
     if (!accessToken) {
-      accessToken = '80d61ee3-ac9f-4e72-9cf8-7a00cf6cc62d';
+      accessToken = '5d128b36-a493-42d4-b293-12c1094820f6';
       Cookies.set('access_token', accessToken, { expires: 7 });
     }
 

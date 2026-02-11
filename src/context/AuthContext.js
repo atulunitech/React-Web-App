@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     if (!accessToken) {
       // alert('No access token found. Redirecting to login.');
       // Set a demo token for testing - replace with actual token from SSO
-      accessToken = '5723746c-9a78-4dc1-acdd-24437920d794';
+      accessToken = '5d128b36-a493-42d4-b293-12c1094820f6';
       Cookies.set('access_token', accessToken, { expires: 7 });
     }
 
